@@ -1,0 +1,63 @@
+{
+  "name": "all-purpose-mc-bot",
+  "version": "0.1.0",
+  "description": "Player-like Minecraft bot controller with a typed game adapter, survival reflexes, villager economy, gear checkpoint and local Qwen planning.",
+  "type": "module",
+  "bin": {
+    "mcbot": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "config",
+    "schemas",
+    "docs",
+    ".env.example",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run test && npm run build",
+    "simulate": "tsx src/cli.ts simulate",
+    "doctor": "tsx src/cli.ts doctor",
+    "schema": "tsx src/cli.ts schema --out schemas/protocol.schema.json",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "minecraft",
+    "bot",
+    "baritone",
+    "liquidbounce",
+    "qwen",
+    "automation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "ws": "^8.18.3",
+    "yaml": "^2.8.1",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

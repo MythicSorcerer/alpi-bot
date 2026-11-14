@@ -1,0 +1,4901 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "all-purpose-mc-bot public schemas",
+  "protocolVersion": "1.0.0",
+  "definitions": {
+    "protocolVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "Action": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "navigate"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "z": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false
+            },
+            "range": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 64
+            },
+            "timeoutMs": {
+              "type": "integer",
+              "minimum": 50,
+              "maximum": 120000
+            }
+          },
+          "required": [
+            "type",
+            "target"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "stop"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "wait"
+            },
+            "durationMs": {
+              "type": "integer",
+              "minimum": 50,
+              "maximum": 300000
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "durationMs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "collect"
+            },
+            "item": {
+              "type": "string",
+              "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 512
+            },
+            "radius": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "count"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "mine"
+            },
+            "position": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/target"
+            },
+            "blockType": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "position"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "place"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "position": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/target"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "position"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "craft"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1024
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "count"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "eat"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "sleep"
+            },
+            "bed": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/target"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "inspect_trades"
+            },
+            "villagerId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "villagerId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "trade"
+            },
+            "villagerId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "offerIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 31
+            },
+            "times": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "villagerId",
+            "offerIndex"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "reroll_trades"
+            },
+            "villagerId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "villagerId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "breed"
+            },
+            "villagerIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "food": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "villagerIds"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "equip"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "slot": {
+              "type": "string",
+              "enum": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "offhand",
+                "mainhand"
+              ]
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "slot"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "attack"
+            },
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "flee"
+            },
+            "entityId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "distance": {
+              "type": "number",
+              "minimum": 8,
+              "maximum": 128
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "apply_book"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "book": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "$ref": "#/definitions/Action/anyOf/3/properties/item"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 64
+                },
+                "slot": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 45
+                },
+                "enchants": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "$ref": "#/definitions/Action/anyOf/3/properties/item"
+                      },
+                      "level": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 255
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "level"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 32
+                },
+                "customName": {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                "durability": {
+                  "type": "object",
+                  "properties": {
+                    "current": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "max": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0
+                    }
+                  },
+                  "required": [
+                    "current",
+                    "max"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "item",
+                "count"
+              ],
+              "additionalProperties": false
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "book"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "drop"
+            },
+            "item": {
+              "$ref": "#/definitions/Action/anyOf/3/properties/item"
+            },
+            "count": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type",
+            "item",
+            "count"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "surface"
+            },
+            "timeoutMs": {
+              "$ref": "#/definitions/Action/anyOf/0/properties/timeoutMs"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ClientMessage": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "hello"
+            },
+            "protocolVersion": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "client": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                }
+              },
+              "required": [
+                "name",
+                "version"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "protocolVersion",
+            "client"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "snapshot_request"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "type",
+            "requestId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "execute"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "actionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "action": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "navigate"
+                    },
+                    "target": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        },
+                        "z": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "z"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "range": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 64
+                    },
+                    "timeoutMs": {
+                      "type": "integer",
+                      "minimum": 50,
+                      "maximum": 120000
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "target"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "stop"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "wait"
+                    },
+                    "durationMs": {
+                      "type": "integer",
+                      "minimum": 50,
+                      "maximum": 300000
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "durationMs"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "collect"
+                    },
+                    "item": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 512
+                    },
+                    "radius": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 128
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "count"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "mine"
+                    },
+                    "position": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/target"
+                    },
+                    "blockType": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "position"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "place"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "position": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/target"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "position"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "craft"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1024
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "count"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "eat"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "sleep"
+                    },
+                    "bed": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/target"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "inspect_trades"
+                    },
+                    "villagerId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "villagerId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "trade"
+                    },
+                    "villagerId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "offerIndex": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 31
+                    },
+                    "times": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 64
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "villagerId",
+                    "offerIndex"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "reroll_trades"
+                    },
+                    "villagerId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "villagerId"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "breed"
+                    },
+                    "villagerIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    "food": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "villagerIds"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "equip"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "slot": {
+                      "type": "string",
+                      "enum": [
+                        "head",
+                        "chest",
+                        "legs",
+                        "feet",
+                        "offhand",
+                        "mainhand"
+                      ]
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "slot"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "attack"
+                    },
+                    "entityId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "flee"
+                    },
+                    "entityId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "distance": {
+                      "type": "number",
+                      "minimum": 8,
+                      "maximum": 128
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "apply_book"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "book": {
+                      "type": "object",
+                      "properties": {
+                        "item": {
+                          "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 64
+                        },
+                        "slot": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 45
+                        },
+                        "enchants": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                              },
+                              "level": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 255
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "level"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "maxItems": 32
+                        },
+                        "customName": {
+                          "type": "string",
+                          "maxLength": 128
+                        },
+                        "durability": {
+                          "type": "object",
+                          "properties": {
+                            "current": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "max": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "current",
+                            "max"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "item",
+                        "count"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "book"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "drop"
+                    },
+                    "item": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/3/properties/item"
+                    },
+                    "count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 64
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "item",
+                    "count"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "surface"
+                    },
+                    "timeoutMs": {
+                      "$ref": "#/definitions/ClientMessage/anyOf/2/properties/action/anyOf/0/properties/timeoutMs"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "requestId",
+            "actionId",
+            "action"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "cancel"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "targetActionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "type",
+            "requestId",
+            "targetActionId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "ping"
+            },
+            "nonce": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          },
+          "required": [
+            "type",
+            "nonce"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ServerMessage": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "hello_ack"
+            },
+            "protocolVersion": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "adapter": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                },
+                "capabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "navigate",
+                      "collect",
+                      "mine",
+                      "place",
+                      "craft",
+                      "eat",
+                      "sleep",
+                      "inspect_trades",
+                      "trade",
+                      "reroll_trades",
+                      "breed",
+                      "equip",
+                      "attack",
+                      "flee",
+                      "apply_book",
+                      "drop",
+                      "surface",
+                      "wait",
+                      "stop"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "name",
+                "version",
+                "capabilities"
+              ],
+              "additionalProperties": false
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "maxActionTimeoutMs": {
+                  "type": "integer",
+                  "minimum": 1000,
+                  "maximum": 600000
+                },
+                "maxMessageBytes": {
+                  "type": "integer",
+                  "minimum": 1024,
+                  "maximum": 16777216
+                },
+                "maxActionsPerMinute": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "maxActionTimeoutMs",
+                "maxMessageBytes"
+              ],
+              "additionalProperties": false
+            },
+            "server": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "software": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                }
+              },
+              "required": [
+                "address",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "tickRate": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 120
+            }
+          },
+          "required": [
+            "type",
+            "protocolVersion",
+            "adapter",
+            "limits"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "snapshot"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "snapshot": {
+              "type": "object",
+              "properties": {
+                "protocolVersion": {
+                  "type": "string",
+                  "pattern": "^\\d+\\.\\d+\\.\\d+$"
+                },
+                "seq": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "timestamp": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "adapter": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "version": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 32
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "version"
+                  ],
+                  "additionalProperties": false
+                },
+                "bot": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "gameMode": {
+                      "type": "string",
+                      "enum": [
+                        "survival",
+                        "creative",
+                        "adventure",
+                        "spectator"
+                      ]
+                    },
+                    "dimension": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        },
+                        "z": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "z"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "velocity": {
+                      "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                    },
+                    "yaw": {
+                      "type": "number"
+                    },
+                    "pitch": {
+                      "type": "number"
+                    },
+                    "health": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "maxHealth": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "food": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 20
+                    },
+                    "saturation": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "air": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "maxAir": {
+                      "type": "integer",
+                      "exclusiveMinimum": 0
+                    },
+                    "xpLevel": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "xpPoints": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "onGround": {
+                      "type": "boolean"
+                    },
+                    "inWater": {
+                      "type": "boolean"
+                    },
+                    "isSleeping": {
+                      "type": "boolean"
+                    },
+                    "selectedSlot": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 8
+                    },
+                    "inventory": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "item": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                          },
+                          "count": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 64
+                          },
+                          "slot": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 45
+                          },
+                          "enchants": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                                },
+                                "level": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 255
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "level"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "maxItems": 32
+                          },
+                          "customName": {
+                            "type": "string",
+                            "maxLength": 128
+                          },
+                          "durability": {
+                            "type": "object",
+                            "properties": {
+                              "current": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "max": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              }
+                            },
+                            "required": [
+                              "current",
+                              "max"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "item",
+                          "count"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 64
+                    },
+                    "armor": {
+                      "type": "object",
+                      "properties": {
+                        "head": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "chest": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "legs": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "feet": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "offhand": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "head",
+                        "chest",
+                        "legs",
+                        "feet",
+                        "offhand"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "mainhand": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "currentScreen": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 64
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "effects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                      },
+                      "maxItems": 32
+                    },
+                    "spawnPoint": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "path": {
+                      "type": "object",
+                      "properties": {
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "goal": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "idle",
+                            "running",
+                            "done",
+                            "failed",
+                            "cancelled"
+                          ]
+                        },
+                        "reason": {
+                          "type": "string",
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "active",
+                        "status"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "action": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128
+                            },
+                            "type": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 64
+                            },
+                            "startedAt": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "deadlineAt": {
+                              "type": "integer",
+                              "minimum": 0
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "type",
+                            "startedAt",
+                            "deadlineAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "username",
+                    "gameMode",
+                    "dimension",
+                    "position",
+                    "yaw",
+                    "pitch",
+                    "health",
+                    "maxHealth",
+                    "food",
+                    "saturation",
+                    "air",
+                    "maxAir",
+                    "xpLevel",
+                    "xpPoints",
+                    "onGround",
+                    "inWater",
+                    "isSleeping",
+                    "selectedSlot",
+                    "inventory",
+                    "armor",
+                    "mainhand",
+                    "currentScreen",
+                    "effects",
+                    "path",
+                    "action"
+                  ],
+                  "additionalProperties": false
+                },
+                "world": {
+                  "type": "object",
+                  "properties": {
+                    "timeOfDay": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 24000
+                    },
+                    "day": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "weather": {
+                      "type": "string",
+                      "enum": [
+                        "clear",
+                        "rain",
+                        "thunder"
+                      ]
+                    },
+                    "difficulty": {
+                      "type": "string",
+                      "enum": [
+                        "peaceful",
+                        "easy",
+                        "normal",
+                        "hard"
+                      ]
+                    },
+                    "nearbyEntities": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "type": {
+                            "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "hostile",
+                              "passive",
+                              "player",
+                              "villager",
+                              "other"
+                            ]
+                          },
+                          "position": {
+                            "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                          },
+                          "health": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "distance": {
+                            "type": "number",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "type",
+                          "kind",
+                          "position"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 256
+                    },
+                    "nearbyBlocks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                          },
+                          "position": {
+                            "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                          },
+                          "hardness": {
+                            "type": "number",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "position"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 512
+                    },
+                    "villagers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128
+                          },
+                          "profession": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                          },
+                          "level": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 5
+                          },
+                          "xp": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "position": {
+                            "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                          },
+                          "tradesKnown": {
+                            "type": "boolean",
+                            "default": false
+                          },
+                          "trades": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "index": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "inputs": {
+                                  "type": "array",
+                                  "items": {
+                                    "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                                  },
+                                  "minItems": 1,
+                                  "maxItems": 2
+                                },
+                                "output": {
+                                  "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                                },
+                                "maxUses": {
+                                  "type": "integer",
+                                  "minimum": 1
+                                },
+                                "uses": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "rewardXp": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "default": 0
+                                },
+                                "minLevel": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 5,
+                                  "default": 1
+                                }
+                              },
+                              "required": [
+                                "index",
+                                "inputs",
+                                "output",
+                                "maxUses",
+                                "uses"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "maxItems": 32
+                          },
+                          "sleeping": {
+                            "type": "boolean"
+                          },
+                          "baby": {
+                            "type": "boolean"
+                          },
+                          "workstation": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "restockAt": {
+                            "anyOf": [
+                              {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "profession",
+                          "level",
+                          "position"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "maxItems": 128
+                    },
+                    "village": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128
+                            },
+                            "center": {
+                              "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/position"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            },
+                            "population": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "beds": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "workstations": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "valid": {
+                              "type": "boolean"
+                            },
+                            "notes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 256
+                              },
+                              "maxItems": 16
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "center",
+                            "radius",
+                            "population",
+                            "beds",
+                            "workstations",
+                            "valid"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "timeOfDay",
+                    "day",
+                    "weather",
+                    "difficulty",
+                    "nearbyEntities",
+                    "nearbyBlocks",
+                    "villagers",
+                    "village"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "protocolVersion",
+                "seq",
+                "timestamp",
+                "adapter",
+                "bot",
+                "world"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "requestId",
+            "snapshot"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "result"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "protocolVersion": {
+                  "type": "string",
+                  "pattern": "^\\d+\\.\\d+\\.\\d+$"
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "actionId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "ok": {
+                  "type": "boolean"
+                },
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "OK",
+                    "INVALID_ACTION",
+                    "NOT_CONNECTED",
+                    "BUSY",
+                    "TIMEOUT",
+                    "CANCELLED",
+                    "GUARDRAIL_BLOCKED",
+                    "PLAYER_DEAD",
+                    "OUT_OF_RANGE",
+                    "NO_PATH",
+                    "BLOCK_NOT_FOUND",
+                    "MISSING_ITEM",
+                    "INVENTORY_FULL",
+                    "CRAFT_FAILED",
+                    "RECIPE_UNKNOWN",
+                    "TRADE_UNAVAILABLE",
+                    "TRADE_EXHAUSTED",
+                    "NOT_ENOUGH_EMERALDS",
+                    "LOW_XP",
+                    "ENCHANT_CONFLICT",
+                    "BED_UNAVAILABLE",
+                    "NOT_NIGHT",
+                    "HOSTILES_NEARBY",
+                    "ENTITY_NOT_FOUND",
+                    "UNSUPPORTED",
+                    "INTERNAL_ERROR"
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "maxLength": 512
+                },
+                "startedAt": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "endedAt": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "snapshotSeq": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "inventoryDelta": {
+                  "type": "object",
+                  "properties": {
+                    "added": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                      },
+                      "maxItems": 256
+                    },
+                    "removed": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/ServerMessage/anyOf/1/properties/snapshot/properties/bot/properties/inventory/items"
+                      },
+                      "maxItems": 256
+                    }
+                  },
+                  "required": [
+                    "added",
+                    "removed"
+                  ],
+                  "additionalProperties": false
+                },
+                "data": {
+                  "type": "object",
+                  "additionalProperties": {}
+                },
+                "events": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "level": {
+                        "type": "string",
+                        "enum": [
+                          "debug",
+                          "info",
+                          "warn",
+                          "error"
+                        ]
+                      },
+                      "message": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "data": {
+                        "type": "object",
+                        "additionalProperties": {}
+                      },
+                      "timestamp": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "message",
+                      "timestamp"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 64
+                }
+              },
+              "required": [
+                "protocolVersion",
+                "requestId",
+                "actionId",
+                "ok",
+                "code",
+                "startedAt",
+                "endedAt",
+                "snapshotSeq"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "type",
+            "requestId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "event"
+            },
+            "event": {
+              "$ref": "#/definitions/ServerMessage/anyOf/2/properties/result/properties/events/items"
+            }
+          },
+          "required": [
+            "type",
+            "event"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "error"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "retryable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "type",
+            "code",
+            "message",
+            "retryable"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "pong"
+            },
+            "nonce": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            }
+          },
+          "required": [
+            "type",
+            "nonce"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Snapshot": {
+      "type": "object",
+      "properties": {
+        "protocolVersion": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "adapter": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "bot": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "gameMode": {
+              "type": "string",
+              "enum": [
+                "survival",
+                "creative",
+                "adventure",
+                "spectator"
+              ]
+            },
+            "dimension": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "z": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "z"
+              ],
+              "additionalProperties": false
+            },
+            "velocity": {
+              "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+            },
+            "yaw": {
+              "type": "number"
+            },
+            "pitch": {
+              "type": "number"
+            },
+            "health": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maxHealth": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "food": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "saturation": {
+              "type": "number",
+              "minimum": 0
+            },
+            "air": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "maxAir": {
+              "type": "integer",
+              "exclusiveMinimum": 0
+            },
+            "xpLevel": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "xpPoints": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "onGround": {
+              "type": "boolean"
+            },
+            "inWater": {
+              "type": "boolean"
+            },
+            "isSleeping": {
+              "type": "boolean"
+            },
+            "selectedSlot": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "inventory": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 64
+                  },
+                  "slot": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 45
+                  },
+                  "enchants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items/properties/item"
+                        },
+                        "level": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 255
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "level"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 32
+                  },
+                  "customName": {
+                    "type": "string",
+                    "maxLength": 128
+                  },
+                  "durability": {
+                    "type": "object",
+                    "properties": {
+                      "current": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "max": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0
+                      }
+                    },
+                    "required": [
+                      "current",
+                      "max"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "item",
+                  "count"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 64
+            },
+            "armor": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "chest": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "legs": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "feet": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "offhand": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "offhand"
+              ],
+              "additionalProperties": false
+            },
+            "mainhand": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "currentScreen": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "effects": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items/properties/item"
+              },
+              "maxItems": 32
+            },
+            "spawnPoint": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "path": {
+              "type": "object",
+              "properties": {
+                "active": {
+                  "type": "boolean"
+                },
+                "goal": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "idle",
+                    "running",
+                    "done",
+                    "failed",
+                    "cancelled"
+                  ]
+                },
+                "reason": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              },
+              "required": [
+                "active",
+                "status"
+              ],
+              "additionalProperties": false
+            },
+            "action": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "type": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "startedAt": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "deadlineAt": {
+                      "type": "integer",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type",
+                    "startedAt",
+                    "deadlineAt"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "username",
+            "gameMode",
+            "dimension",
+            "position",
+            "yaw",
+            "pitch",
+            "health",
+            "maxHealth",
+            "food",
+            "saturation",
+            "air",
+            "maxAir",
+            "xpLevel",
+            "xpPoints",
+            "onGround",
+            "inWater",
+            "isSleeping",
+            "selectedSlot",
+            "inventory",
+            "armor",
+            "mainhand",
+            "currentScreen",
+            "effects",
+            "path",
+            "action"
+          ],
+          "additionalProperties": false
+        },
+        "world": {
+          "type": "object",
+          "properties": {
+            "timeOfDay": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 24000
+            },
+            "day": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "weather": {
+              "type": "string",
+              "enum": [
+                "clear",
+                "rain",
+                "thunder"
+              ]
+            },
+            "difficulty": {
+              "type": "string",
+              "enum": [
+                "peaceful",
+                "easy",
+                "normal",
+                "hard"
+              ]
+            },
+            "nearbyEntities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "type": {
+                    "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items/properties/item"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "hostile",
+                      "passive",
+                      "player",
+                      "villager",
+                      "other"
+                    ]
+                  },
+                  "position": {
+                    "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                  },
+                  "health": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "distance": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "id",
+                  "type",
+                  "kind",
+                  "position"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 256
+            },
+            "nearbyBlocks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items/properties/item"
+                  },
+                  "position": {
+                    "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                  },
+                  "hardness": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "type",
+                  "position"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 512
+            },
+            "villagers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "profession": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "level": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "xp": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "position": {
+                    "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                  },
+                  "tradesKnown": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "trades": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "index": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "inputs": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                          },
+                          "minItems": 1,
+                          "maxItems": 2
+                        },
+                        "output": {
+                          "$ref": "#/definitions/Snapshot/properties/bot/properties/inventory/items"
+                        },
+                        "maxUses": {
+                          "type": "integer",
+                          "minimum": 1
+                        },
+                        "uses": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "rewardXp": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "default": 0
+                        },
+                        "minLevel": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5,
+                          "default": 1
+                        }
+                      },
+                      "required": [
+                        "index",
+                        "inputs",
+                        "output",
+                        "maxUses",
+                        "uses"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "maxItems": 32
+                  },
+                  "sleeping": {
+                    "type": "boolean"
+                  },
+                  "baby": {
+                    "type": "boolean"
+                  },
+                  "workstation": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "restockAt": {
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "profession",
+                  "level",
+                  "position"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 128
+            },
+            "village": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128
+                    },
+                    "center": {
+                      "$ref": "#/definitions/Snapshot/properties/bot/properties/position"
+                    },
+                    "radius": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "population": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "beds": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "workstations": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "valid": {
+                      "type": "boolean"
+                    },
+                    "notes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 256
+                      },
+                      "maxItems": 16
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "center",
+                    "radius",
+                    "population",
+                    "beds",
+                    "workstations",
+                    "valid"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "timeOfDay",
+            "day",
+            "weather",
+            "difficulty",
+            "nearbyEntities",
+            "nearbyBlocks",
+            "villagers",
+            "village"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "protocolVersion",
+        "seq",
+        "timestamp",
+        "adapter",
+        "bot",
+        "world"
+      ],
+      "additionalProperties": false
+    },
+    "Config": {
+      "type": "object",
+      "properties": {
+        "bot": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16,
+              "default": "MCBot"
+            },
+            "owner": {
+              "type": "string",
+              "maxLength": 128,
+              "default": ""
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "run": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "default": "checkpoint"
+            },
+            "seed": {
+              "type": "integer",
+              "default": 42
+            },
+            "maxActions": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000,
+              "default": 5000
+            },
+            "maxMinutes": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 1440,
+              "default": 120
+            },
+            "checkpointEveryActions": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 10
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "adapter": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "default": "ws://127.0.0.1:8765"
+            },
+            "connectTimeoutMs": {
+              "type": "integer",
+              "minimum": 500,
+              "maximum": 60000,
+              "default": 5000
+            },
+            "requestTimeoutMs": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 120000,
+              "default": 30000
+            },
+            "reconnectAttempts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20,
+              "default": 3
+            },
+            "reconnectDelayMs": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 60000,
+              "default": 1000
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "guardrails": {
+          "type": "object",
+          "properties": {
+            "allowRemoteAdapter": {
+              "type": "boolean",
+              "default": false
+            },
+            "requireServerWhitelist": {
+              "type": "boolean",
+              "default": true
+            },
+            "serverWhitelist": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "default": [
+                "127.0.0.1:25565",
+                "localhost:25565"
+              ]
+            },
+            "allowExploits": {
+              "type": "boolean",
+              "default": false
+            },
+            "allowChat": {
+              "type": "boolean",
+              "default": false
+            },
+            "maxActionTimeoutMs": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 120000,
+              "default": 60000
+            },
+            "killSwitchFile": {
+              "type": "string",
+              "maxLength": 512,
+              "default": "./STOP"
+            },
+            "maxActionsPerMinute": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6000,
+              "default": 600
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "simulation": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "scenario": {
+              "type": "string",
+              "enum": [
+                "default",
+                "hostile-night",
+                "scarce"
+              ],
+              "default": "default"
+            },
+            "villageDistance": {
+              "type": "number",
+              "minimum": 64,
+              "maximum": 8000,
+              "default": 480
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "exploration": {
+          "type": "object",
+          "properties": {
+            "stepBlocks": {
+              "type": "number",
+              "minimum": 16,
+              "maximum": 512,
+              "default": 128
+            },
+            "maxDistanceBlocks": {
+              "type": "number",
+              "minimum": 64,
+              "maximum": 16000,
+              "default": 1024
+            },
+            "detectionRadius": {
+              "type": "number",
+              "minimum": 16,
+              "maximum": 256,
+              "default": 96
+            },
+            "maxWaypoints": {
+              "type": "integer",
+              "minimum": 4,
+              "maximum": 1000,
+              "default": 64
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "settlement": {
+          "type": "object",
+          "properties": {
+            "minPopulation": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 32,
+              "default": 4
+            },
+            "sleepAtNight": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "economy": {
+          "type": "object",
+          "properties": {
+            "emeraldTarget": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000,
+              "default": 240
+            },
+            "maxRestocks": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 80
+            },
+            "maxRerolls": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000,
+              "default": 120
+            },
+            "tradeActionBatch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64,
+              "default": 12
+            },
+            "restockWaitMs": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 300000,
+              "default": 30000
+            },
+            "keepFood": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 64,
+              "default": 4
+            },
+            "dropThreshold": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 45,
+              "default": 33
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "gear": {
+          "type": "object",
+          "properties": {
+            "checklist": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "item": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                  },
+                  "enchants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "$ref": "#/definitions/Config/properties/gear/properties/checklist/items/properties/item"
+                        },
+                        "level": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 255
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "level"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1
+                  },
+                  "optional": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "item",
+                  "enchants"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 16,
+              "default": [
+                {
+                  "item": "minecraft:diamond_helmet",
+                  "enchants": [
+                    {
+                      "id": "minecraft:protection",
+                      "level": 4
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_chestplate",
+                  "enchants": [
+                    {
+                      "id": "minecraft:protection",
+                      "level": 4
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_leggings",
+                  "enchants": [
+                    {
+                      "id": "minecraft:protection",
+                      "level": 4
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_boots",
+                  "enchants": [
+                    {
+                      "id": "minecraft:protection",
+                      "level": 4
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    },
+                    {
+                      "id": "minecraft:feather_falling",
+                      "level": 4
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_sword",
+                  "enchants": [
+                    {
+                      "id": "minecraft:sharpness",
+                      "level": 5
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_pickaxe",
+                  "enchants": [
+                    {
+                      "id": "minecraft:efficiency",
+                      "level": 5
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                },
+                {
+                  "item": "minecraft:diamond_axe",
+                  "enchants": [
+                    {
+                      "id": "minecraft:efficiency",
+                      "level": 5
+                    },
+                    {
+                      "id": "minecraft:unbreaking",
+                      "level": 3
+                    }
+                  ],
+                  "optional": false
+                }
+              ]
+            },
+            "maxBookRerolls": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500,
+              "default": 80
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "reflex": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true
+            },
+            "lowHealth": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 8
+            },
+            "lowFood": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20,
+              "default": 6
+            },
+            "hostileRadius": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 48,
+              "default": 8
+            },
+            "criticalHostileRadius": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 48,
+              "default": 4
+            },
+            "voidY": {
+              "type": "number",
+              "minimum": -128,
+              "maximum": 0,
+              "default": -60
+            },
+            "stuckAfterFailures": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 3
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "planner": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "deterministic",
+                "qwen"
+              ],
+              "default": "deterministic"
+            },
+            "qwen": {
+              "type": "object",
+              "properties": {
+                "baseUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "default": "http://127.0.0.1:11434/v1"
+                },
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "default": "qwen2.5:14b-instruct"
+                },
+                "apiKeyEnv": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "default": "QWEN_API_KEY"
+                },
+                "timeoutMs": {
+                  "type": "integer",
+                  "minimum": 500,
+                  "maximum": 120000,
+                  "default": 15000
+                },
+                "maxTokens": {
+                  "type": "integer",
+                  "minimum": 16,
+                  "maximum": 4096,
+                  "default": 256
+                },
+                "temperature": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "default": 0.1
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "dir": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "default": "./state"
+            },
+            "saveEvents": {
+              "type": "boolean",
+              "default": true
+            },
+            "maxEventFileBytes": {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 536870912,
+              "default": 67108864
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ],
+              "default": "info"
+            },
+            "pretty": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false,
+          "default": {}
+        }
+      },
+      "additionalProperties": false
+    },
+    "Checkpoint": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updatedAt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "protocolVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adapter": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "server": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "software": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "address",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "phase": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "snapshot": {
+          "type": "object",
+          "properties": {
+            "protocolVersion": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "seq": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "timestamp": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "adapter": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                }
+              },
+              "required": [
+                "name",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "bot": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "gameMode": {
+                  "type": "string",
+                  "enum": [
+                    "survival",
+                    "creative",
+                    "adventure",
+                    "spectator"
+                  ]
+                },
+                "dimension": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    },
+                    "z": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "z"
+                  ],
+                  "additionalProperties": false
+                },
+                "velocity": {
+                  "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                },
+                "yaw": {
+                  "type": "number"
+                },
+                "pitch": {
+                  "type": "number"
+                },
+                "health": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "maxHealth": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "food": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 20
+                },
+                "saturation": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "air": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "maxAir": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                "xpLevel": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "xpPoints": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "onGround": {
+                  "type": "boolean"
+                },
+                "inWater": {
+                  "type": "boolean"
+                },
+                "isSleeping": {
+                  "type": "boolean"
+                },
+                "selectedSlot": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 8
+                },
+                "inventory": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "item": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_.-]+:[a-z0-9_./-]+$"
+                      },
+                      "count": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 64
+                      },
+                      "slot": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 45
+                      },
+                      "enchants": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                            },
+                            "level": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 255
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "level"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 32
+                      },
+                      "customName": {
+                        "type": "string",
+                        "maxLength": 128
+                      },
+                      "durability": {
+                        "type": "object",
+                        "properties": {
+                          "current": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "max": {
+                            "type": "integer",
+                            "exclusiveMinimum": 0
+                          }
+                        },
+                        "required": [
+                          "current",
+                          "max"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "item",
+                      "count"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 64
+                },
+                "armor": {
+                  "type": "object",
+                  "properties": {
+                    "head": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "chest": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "legs": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "feet": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "offhand": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "head",
+                    "chest",
+                    "legs",
+                    "feet",
+                    "offhand"
+                  ],
+                  "additionalProperties": false
+                },
+                "mainhand": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "currentScreen": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "maxLength": 64
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "effects": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                  },
+                  "maxItems": 32
+                },
+                "spawnPoint": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "path": {
+                  "type": "object",
+                  "properties": {
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "goal": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "idle",
+                        "running",
+                        "done",
+                        "failed",
+                        "cancelled"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "maxLength": 256
+                    }
+                  },
+                  "required": [
+                    "active",
+                    "status"
+                  ],
+                  "additionalProperties": false
+                },
+                "action": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        "type": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "startedAt": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "deadlineAt": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "type",
+                        "startedAt",
+                        "deadlineAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "username",
+                "gameMode",
+                "dimension",
+                "position",
+                "yaw",
+                "pitch",
+                "health",
+                "maxHealth",
+                "food",
+                "saturation",
+                "air",
+                "maxAir",
+                "xpLevel",
+                "xpPoints",
+                "onGround",
+                "inWater",
+                "isSleeping",
+                "selectedSlot",
+                "inventory",
+                "armor",
+                "mainhand",
+                "currentScreen",
+                "effects",
+                "path",
+                "action"
+              ],
+              "additionalProperties": false
+            },
+            "world": {
+              "type": "object",
+              "properties": {
+                "timeOfDay": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 24000
+                },
+                "day": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "weather": {
+                  "type": "string",
+                  "enum": [
+                    "clear",
+                    "rain",
+                    "thunder"
+                  ]
+                },
+                "difficulty": {
+                  "type": "string",
+                  "enum": [
+                    "peaceful",
+                    "easy",
+                    "normal",
+                    "hard"
+                  ]
+                },
+                "nearbyEntities": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "type": {
+                        "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "hostile",
+                          "passive",
+                          "player",
+                          "villager",
+                          "other"
+                        ]
+                      },
+                      "position": {
+                        "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                      },
+                      "health": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "distance": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "type",
+                      "kind",
+                      "position"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 256
+                },
+                "nearbyBlocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items/properties/item"
+                      },
+                      "position": {
+                        "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                      },
+                      "hardness": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "position"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 512
+                },
+                "villagers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "profession": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      },
+                      "level": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                      },
+                      "xp": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "position": {
+                        "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                      },
+                      "tradesKnown": {
+                        "type": "boolean",
+                        "default": false
+                      },
+                      "trades": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "index": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "inputs": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                              },
+                              "minItems": 1,
+                              "maxItems": 2
+                            },
+                            "output": {
+                              "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+                            },
+                            "maxUses": {
+                              "type": "integer",
+                              "minimum": 1
+                            },
+                            "uses": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "rewardXp": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "default": 0
+                            },
+                            "minLevel": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 5,
+                              "default": 1
+                            }
+                          },
+                          "required": [
+                            "index",
+                            "inputs",
+                            "output",
+                            "maxUses",
+                            "uses"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "maxItems": 32
+                      },
+                      "sleeping": {
+                        "type": "boolean"
+                      },
+                      "baby": {
+                        "type": "boolean"
+                      },
+                      "workstation": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "restockAt": {
+                        "anyOf": [
+                          {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "profession",
+                      "level",
+                      "position"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "maxItems": 128
+                },
+                "village": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128
+                        },
+                        "center": {
+                          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+                        },
+                        "radius": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "population": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "beds": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "workstations": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "valid": {
+                          "type": "boolean"
+                        },
+                        "notes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 256
+                          },
+                          "maxItems": 16
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "center",
+                        "radius",
+                        "population",
+                        "beds",
+                        "workstations",
+                        "valid"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "timeOfDay",
+                "day",
+                "weather",
+                "difficulty",
+                "nearbyEntities",
+                "nearbyBlocks",
+                "villagers",
+                "village"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "protocolVersion",
+            "seq",
+            "timestamp",
+            "adapter",
+            "bot",
+            "world"
+          ],
+          "additionalProperties": false
+        },
+        "villagers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/world/properties/villagers/items"
+          },
+          "maxItems": 128
+        },
+        "village": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/world/properties/village/anyOf/0"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+          }
+        },
+        "armor": {
+          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/armor"
+        },
+        "mainhand": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/inventory/items"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "position": {
+          "$ref": "#/definitions/Checkpoint/properties/snapshot/properties/bot/properties/position"
+        },
+        "ledger": {
+          "type": "object",
+          "properties": {
+            "emeraldsEarned": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "emeraldsSpent": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trades": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "earn",
+                      "spend"
+                    ]
+                  },
+                  "emeralds": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "item": {
+                    "type": "string"
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "villagerId": {
+                    "type": "string"
+                  },
+                  "tradeIndex": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "kind",
+                  "emeralds",
+                  "item",
+                  "count",
+                  "villagerId",
+                  "tradeIndex"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 5000
+            }
+          },
+          "required": [
+            "emeraldsEarned",
+            "emeraldsSpent",
+            "trades",
+            "entries"
+          ],
+          "additionalProperties": false
+        },
+        "gear": {
+          "type": "object",
+          "properties": {
+            "verified": {
+              "type": "boolean"
+            },
+            "items": {
+              "type": "array",
+              "items": {}
+            },
+            "missingItems": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missingEnchantments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "verified",
+            "items",
+            "missingItems",
+            "missingEnchantments"
+          ],
+          "additionalProperties": false
+        },
+        "checklist": {
+          "type": "array",
+          "items": {}
+        },
+        "resume": {
+          "type": "object",
+          "properties": {
+            "phase": {
+              "type": "string",
+              "minLength": 1
+            },
+            "task": {},
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "maxItems": 64
+            },
+            "settled": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "phase",
+            "notes",
+            "settled"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "eventLog": {
+              "type": "string",
+              "minLength": 1
+            },
+            "report": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "eventLog",
+            "report"
+          ],
+          "additionalProperties": false
+        },
+        "checksum": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "runId",
+        "createdAt",
+        "updatedAt",
+        "protocolVersion",
+        "adapter",
+        "server",
+        "phase",
+        "snapshot",
+        "villagers",
+        "village",
+        "inventory",
+        "armor",
+        "mainhand",
+        "position",
+        "ledger",
+        "gear",
+        "checklist",
+        "resume",
+        "evidence",
+        "checksum"
+      ],
+      "additionalProperties": false
+    },
+    "RunState": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "phase": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "task": {},
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "actionsAttempted": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "actionsSucceeded": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "actionsFailed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "actionTimeouts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reflexActions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "deaths": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trades": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "emeraldsEarned": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "emeraldsSpent": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "booksApplied": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "logsCollected": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "distanceMoved": {
+              "type": "number",
+              "minimum": 0
+            },
+            "modelCalls": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "modelFailures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "modelLatencyMs": {
+              "type": "number",
+              "minimum": 0
+            },
+            "modelTokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "actionsAttempted",
+            "actionsSucceeded",
+            "actionsFailed",
+            "actionTimeouts",
+            "retries",
+            "reflexActions",
+            "deaths",
+            "trades",
+            "emeraldsEarned",
+            "emeraldsSpent",
+            "booksApplied",
+            "logsCollected",
+            "distanceMoved",
+            "modelCalls",
+            "modelFailures",
+            "modelLatencyMs",
+            "modelTokens"
+          ],
+          "additionalProperties": false
+        },
+        "ledger": {
+          "type": "object",
+          "properties": {
+            "emeraldsEarned": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "emeraldsSpent": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trades": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "earn",
+                      "spend"
+                    ]
+                  },
+                  "emeralds": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "item": {
+                    "type": "string"
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "villagerId": {
+                    "type": "string"
+                  },
+                  "tradeIndex": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "kind",
+                  "emeralds",
+                  "item",
+                  "count",
+                  "villagerId",
+                  "tradeIndex"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 5000
+            }
+          },
+          "required": [
+            "emeraldsEarned",
+            "emeraldsSpent",
+            "trades",
+            "entries"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "maxItems": 256
+        },
+        "settled": {
+          "type": "boolean"
+        },
+        "emeraldGoalOverride": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startedAt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "updatedAt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "checkpointsWritten": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "runId",
+        "phase",
+        "metrics",
+        "ledger",
+        "notes",
+        "settled",
+        "emeraldGoalOverride",
+        "startedAt",
+        "updatedAt",
+        "checkpointsWritten"
+      ],
+      "additionalProperties": false
+    },
+    "EventRecord": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "debug",
+            "info",
+            "warn",
+            "error"
+          ]
+        },
+        "event": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "phase": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "actionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "data": {}
+      },
+      "required": [
+        "timestamp",
+        "runId",
+        "level",
+        "event"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

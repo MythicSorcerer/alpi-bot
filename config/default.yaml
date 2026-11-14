@@ -1,0 +1,88 @@
+# Default configuration for all-purpose-mc-bot.
+# All values are validated by src/config.ts; unknown keys are rejected.
+bot:
+  username: MCBot
+  owner: ""
+
+run:
+  name: checkpoint
+  seed: 42
+  maxActions: 5000
+  maxMinutes: 120
+  checkpointEveryActions: 10
+
+adapter:
+  # The controller refuses non-loopback adapters unless guardrails.allowRemoteAdapter is true.
+  url: ws://127.0.0.1:8765
+  connectTimeoutMs: 5000
+  requestTimeoutMs: 30000
+  reconnectAttempts: 3
+  reconnectDelayMs: 1000
+
+guardrails:
+  allowRemoteAdapter: false
+  requireServerWhitelist: true
+  serverWhitelist:
+    - 127.0.0.1:25565
+    - localhost:25565
+  allowExploits: false
+  allowChat: false
+  maxActionTimeoutMs: 60000
+  killSwitchFile: ./STOP
+  maxActionsPerMinute: 600
+
+simulation:
+  scenario: default # default | hostile-night | scarce
+  villageDistance: 480
+  port: 0
+
+exploration:
+  stepBlocks: 128
+  maxDistanceBlocks: 1024
+  detectionRadius: 96
+  maxWaypoints: 64
+
+settlement:
+  minPopulation: 4
+  sleepAtNight: true
+
+economy:
+  emeraldTarget: 240
+  maxRestocks: 80
+  tradeActionBatch: 12
+  restockWaitMs: 30000
+  keepFood: 4
+  dropThreshold: 33
+
+gear:
+  maxBookRerolls: 80
+  # Omit `checklist` to use the built-in MVP checklist from src/config.ts.
+  # Override it only when you intentionally change the checkpoint target.
+
+reflex:
+  enabled: true
+  lowHealth: 8
+  lowFood: 6
+  hostileRadius: 8
+  criticalHostileRadius: 4
+  voidY: -60
+  stuckAfterFailures: 3
+
+planner:
+  mode: deterministic # deterministic | qwen
+  qwen:
+    baseUrl: http://127.0.0.1:11434/v1
+    model: qwen2.5:14b-instruct
+    apiKeyEnv: QWEN_API_KEY
+    timeoutMs: 15000
+    maxTokens: 256
+    temperature: 0.1
+
+persistence:
+  dir: ./state
+  saveEvents: true
+  maxEventFileBytes: 67108864
+
+logging:
+  level: info
+  pretty: true
