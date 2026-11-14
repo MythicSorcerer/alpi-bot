@@ -1,6 +1,6 @@
 # Status
 
-Last updated: 2026-11-13 (local checkout). Version `0.1.0`.
+Last updated: 2026-11-14 (local checkout). Version `0.1.0`.
 
 ## Summary
 
@@ -35,7 +35,7 @@ Not implemented or verified:
 | Roadmap milestone | Status | Evidence / gap |
 | --- | --- | --- |
 | **M0 — Runtime and server baseline** | **Blocked** | No LiquidBounce installation, pinned versions, authorized account or server. No headless boot was attempted. |
-| **M1 — Control architecture and observability** | **Done for the controller side** | Typed protocol, WebSocket client/server, controller, event log, checkpoints, mock/simulator harness, 43 tests. Live add-on side is the gap. |
+| **M1 — Control architecture and observability** | **Done for the controller side** | Typed protocol, WebSocket client/server, controller, event log, checkpoints, mock/simulator harness, 46 tests. Live add-on side is the gap. |
 | **M2 — Deterministic movement and survival primitives** | **Done in simulation** | Navigation, collect, mine, place, craft, eat, sleep, equip, drop, surface, attack, flee, stop, cancellation, timeouts, stuck-stop and survival reflexes. Live primitives depend on M0. |
 | **M3 — Village discovery and settlement** | **Done in simulation** | Persisted frontier, bounded waypoints, village validation (population/beds/workstations), arrival, night sleep/spawn observation. |
 | **M4 — First sustainable villager economy** | **Done in simulation (simplified)** | Fletcher stick→emerald loop, wood/plank/stick crafting, batching, restock waits, inventory cleanup, trade ledger. Breeding exists as an action but is not part of the default loop. |
@@ -46,32 +46,30 @@ Not implemented or verified:
 
 ## Verification performed
 
-Commands run from the repository root:
+Commands run from the repository root during this review:
 
 ```bash
-npm run typecheck
-npm test
-npm run build
-npm run schema
-node dist/cli.js simulate --state-dir /tmp/opencode/mcbot-final
-node dist/cli.js verify  --state-dir /tmp/opencode/mcbot-final
-node dist/cli.js inspect --state-dir /tmp/opencode/mcbot-final
-node dist/cli.js replay  --state-dir /tmp/opencode/mcbot-final
-# plus adapter-sim + run over loopback WebSocket
+npm ci
+npm run check
+node dist/cli.js doctor --json
+node dist/cli.js simulate --state-dir <temporary-directory>
+npm audit
 ```
 
 | Gate | Result |
 | --- | --- |
 | `tsc --noEmit` | Pass. |
-| Vitest | **43 tests / 8 files pass**, including in-process e2e, WebSocket e2e and CLI smoke. |
+| Vitest | **46 tests / 9 files pass**, including in-process e2e, WebSocket e2e and CLI smoke. |
 | Build | Pass; `dist/cli.js` is emitted with a shebang and executable bit. |
 | JSON Schema | `schemas/protocol.schema.json` regenerated (148 KB; Action, ClientMessage, ServerMessage, Snapshot, Config, Checkpoint, RunState, EventRecord). |
 | Doctor | Passes against the checked-in default config (Node, config, loopback URL, whitelist, state directory, kill switch, simulator, planner). |
-| In-process simulation | **OK**: 180/180 actions, 0 failed, 0 retries, 240 emeralds earned, 207 spent, 265 trades, 15 books applied, 7/7 gear verified, ~87 ms wall clock. |
+| In-process simulation | **OK**: 180/180 actions, 0 failed, 0 retries, 240 emeralds earned, 207 spent, 265 trades, 7/7 gear verified, ~150 ms wall clock in this run. |
 | WebSocket simulation | **OK**: 180/180 actions over real loopback sockets, 0 failed, 7/7 gear, checkpoint verified, ~0.7 s. |
 | Checkpoint | SHA-256 checksum valid; gear re-verified from the saved snapshot; checklist matches config. |
 | Evidence log | 240 JSONL records, 180 action results, 0 timestamp regressions on replay. |
 | Resume | Controller state and checkpoint are reloadable; the in-process test resumes without losing the run id or action count. |
+| Dependency audit | Vitest upgraded to 4.1.12 and its reported vulnerabilities are cleared. `npm audit` still reports one high-severity advisory for Zod 3; Zod 4 is a breaking migration for this project's schema defaults and JSON Schema generation and was not applied without compatibility work. |
+| Target hardware | **Not tested by design.** The available hardware is mismatched. No client, server, account, or hardware-dependent test was attempted; target compatibility remains unverified. |
 
 Representative default-run summary (`node dist/cli.js simulate`):
 
@@ -137,8 +135,8 @@ availability.
   `guardrails.allowChat` are validated and documented but not consumed by the
   current MVP tasks (`simulation.enabled` is only recorded in evidence). They
   are kept for planned behaviour and explicit policy, not silently ignored.
-- **No git history.** The working directory is not a git repository; nothing
-  has been committed or pushed.
+- This checkout has a git repository, but this task did not create a commit or
+  push changes.
 
 ## Next steps
 
