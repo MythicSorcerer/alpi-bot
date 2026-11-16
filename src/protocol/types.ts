@@ -250,7 +250,7 @@ export const AdapterEventSchema = z
     type: z.string().min(1).max(64),
     level: z.enum(["debug", "info", "warn", "error"]).optional(),
     message: z.string().max(1024),
-    data: z.record(z.unknown()).optional(),
+    data: z.record(z.string(), z.unknown()).optional(),
     timestamp: z.number().int().min(0),
   })
   .strict();
@@ -268,7 +268,7 @@ export const ActionResultSchema = z
     endedAt: z.number().int().min(0),
     snapshotSeq: z.number().int().min(0),
     inventoryDelta: InventoryDeltaSchema.optional(),
-    data: z.record(z.unknown()).optional(),
+    data: z.record(z.string(), z.unknown()).optional(),
     events: z.array(AdapterEventSchema).max(64).optional(),
   })
   .strict();

@@ -33,10 +33,16 @@ describe("CLI", () => {
     const result = cli(["schema", "--out", target]);
     expect(result.status).toBe(0);
     expect(existsSync(target)).toBe(true);
-    const schema = JSON.parse(readFileSync(target, "utf8")) as { protocolVersion: string; definitions: Record<string, unknown> };
+    const schema = JSON.parse(readFileSync(target, "utf8")) as {
+      $schema: string;
+      protocolVersion: string;
+      definitions: Record<string, Record<string, unknown>>;
+    };
+    expect(schema.$schema).toBe("http://json-schema.org/draft-07/schema#");
     expect(schema.protocolVersion).toBe("1.0.0");
     expect(schema.definitions.Action).toBeDefined();
     expect(schema.definitions.Checkpoint).toBeDefined();
+    expect(schema.definitions.Action?.$schema).toBeUndefined();
   });
 
   it("simulates the checkpoint and verifies it from the CLI", () => {

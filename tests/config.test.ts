@@ -28,6 +28,14 @@ describe("configuration", () => {
     expect(config.gear.checklist.every((entry) => entry.optional === false)).toBe(true);
   });
 
+  it("applies nested defaults when a partial config section is provided", () => {
+    const config = parseConfig({ planner: { qwen: { model: "qwen-test" } }, bot: { username: "PartialBot" } });
+    expect(config.bot).toEqual({ username: "PartialBot", owner: "" });
+    expect(config.planner.mode).toBe("deterministic");
+    expect(config.planner.qwen.model).toBe("qwen-test");
+    expect(config.planner.qwen.timeoutMs).toBe(15_000);
+  });
+
   it("keeps the gear checkpoint explicit", () => {
     const items = DEFAULT_GEAR_CHECKLIST.map((entry) => entry.item);
     expect(items).toEqual([

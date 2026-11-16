@@ -4,7 +4,6 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, wri
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 import { loadConfig } from "./config-file.js";
 import { ConfigSchema, GearRequirementSchema, parseConfig, type Config } from "./config.js";
 import { assertAdapterAllowed, isServerWhitelisted, killSwitchActive } from "./guardrails.js";
@@ -656,13 +655,12 @@ export async function main(argv: string[] = process.argv): Promise<number> {
         ["EventRecord", EventRecordSchema],
       ];
       for (const [name, schema] of schemas) {
-        const converted = zodToJsonSchema(schema, { name, target: "jsonSchema7" }) as {
-          $schema?: string;
-          definitions?: Record<string, unknown>;
-        };
-        if (converted.definitions) Object.assign(definitions, converted.definitions);
-        definitions[name] = converted.definitions?.[name] ?? converted;
-        delete definitions.$schema;
+        const converted = z.toJSONSchema(schema, {
+          target: "draft-07",
+          unrepresentable: "any",
+        });
+        delete converted.$schema;
+        definitions[name] = converted;
       }
       const document = {
         $schema: "http://json-schema.org/draft-07/schema#",

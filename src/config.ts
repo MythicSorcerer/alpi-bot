@@ -83,7 +83,7 @@ export const ConfigSchema = z
         owner: z.string().max(128).default(""),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     run: z
       .object({
         name: z.string().min(1).max(64).default("checkpoint"),
@@ -93,7 +93,7 @@ export const ConfigSchema = z
         checkpointEveryActions: z.number().int().min(1).max(1_000).default(10),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     adapter: z
       .object({
         url: z.string().url().default("ws://127.0.0.1:8765"),
@@ -103,7 +103,7 @@ export const ConfigSchema = z
         reconnectDelayMs: z.number().int().min(100).max(60_000).default(1_000),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     guardrails: z
       .object({
         allowRemoteAdapter: z.boolean().default(false),
@@ -116,7 +116,7 @@ export const ConfigSchema = z
         maxActionsPerMinute: z.number().int().min(1).max(6_000).default(600),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     simulation: z
       .object({
         scenario: z.enum(["default", "hostile-night", "scarce"]).default("default"),
@@ -124,7 +124,7 @@ export const ConfigSchema = z
         port: z.number().int().min(0).max(65_535).default(0),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     exploration: z
       .object({
         stepBlocks: z.number().min(16).max(512).default(128),
@@ -133,14 +133,14 @@ export const ConfigSchema = z
         maxWaypoints: z.number().int().min(4).max(1_000).default(64),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     settlement: z
       .object({
         minPopulation: z.number().int().min(1).max(32).default(4),
         sleepAtNight: z.boolean().default(true),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     economy: z
       .object({
         emeraldTarget: z.number().int().min(1).max(10_000).default(240),
@@ -151,7 +151,7 @@ export const ConfigSchema = z
         dropThreshold: z.number().int().min(10).max(45).default(33),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     gear: z
       .object({
         checklist: z.array(GearRequirementSchema).min(1).max(16).default(DEFAULT_GEAR_CHECKLIST),
@@ -159,7 +159,7 @@ export const ConfigSchema = z
         maxBookRerolls: z.number().int().min(0).max(500).default(80),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     reflex: z
       .object({
         enabled: z.boolean().default(true),
@@ -171,7 +171,7 @@ export const ConfigSchema = z
         stuckAfterFailures: z.number().int().min(1).max(20).default(3),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     planner: z
       .object({
         mode: z.enum(["deterministic", "qwen"]).default("deterministic"),
@@ -185,10 +185,10 @@ export const ConfigSchema = z
             temperature: z.number().min(0).max(2).default(0.1),
           })
           .strict()
-          .default({}),
+          .prefault({}),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     persistence: z
       .object({
         dir: z.string().min(1).max(512).default("./state"),
@@ -196,14 +196,14 @@ export const ConfigSchema = z
         maxEventFileBytes: z.number().int().min(1024).max(512 * 1024 * 1024).default(64 * 1024 * 1024),
       })
       .strict()
-      .default({}),
+      .prefault({}),
     logging: z
       .object({
         level: z.enum(["debug", "info", "warn", "error"]).default("info"),
         pretty: z.boolean().default(true),
       })
       .strict()
-      .default({}),
+      .prefault({}),
   })
   .strict();
 
